@@ -1,22 +1,5 @@
 const http = require('http');
 const fs = require('fs');
-const EventEmitter = require('events');
-
-const myURL = new URL('http://localhost:8080');
-
-/* const eventEmitter = new EventEmitter();
-
-eventEmitter.on('loadHome', () => {
-  myURL.href = 'http://localhost:8080';
-});
-
-eventEmitter.on('loadAbout', () => {
-  myURL.href = 'http://localhost:8080/about';
-});
-
-eventEmitter.on('loadContactMe', () => {
-  myURL.href = 'http://localhost:8080/contact-me';
-}); */
 
 const loadPage = (response, pageName) => {
   fs.readFile(`/Users/armandoortiz/repos/Basic-Informational-Site-TODP/${pageName}.html`, 'utf8', (error, html) => {
@@ -26,7 +9,7 @@ const loadPage = (response, pageName) => {
     response.end();
   });
 };
-
+/*
 const server = http.createServer((request, response) => {
   if (request.url === '/') {
     loadPage(response, 'index');
@@ -39,9 +22,34 @@ const server = http.createServer((request, response) => {
   }
 });
 
-server.listen(8080);
+server.listen(8080); */
 
-/* fs.readFile('/Users/armandoortiz/repos/Basic-Informational-Site-TODP/index.html', (error, data) => {
+const express = require('express');
+
+const app = express();
+const router = express.Router();
+const port = 8080;
+
+router.get('/', (request, response) => {
+  loadPage(response, 'index');
+});
+
+router.get('/about', (request, response) => {
+  loadPage(response, 'about');
+});
+
+router.get('/contact-me', (request, response) => {
+  loadPage(response, 'contact-me');
+});
+
+app.use('/', router);
+app.use((request, response, next) => {
+  response.status(404).send('Error 404 - Page was not found');
+});
+app.listen(port);
+
+/* fs.readFile
+('/Users/armandoortiz/repos/Basic-Informational-Site-TODP/index.html', (error, data) => {
   if (error) throw error;
   http.createServer((request, response) => {
     response.writeHeader(200, { 'Content-Type': 'text/html' });
